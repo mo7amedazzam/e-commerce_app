@@ -63,8 +63,7 @@ class FavoritesScreen extends StatelessWidget {
               ),
             ),
           ),
-          body:
-          ConditionalBuilder(
+          body: ConditionalBuilder(
             condition: state is! LoadingGetFavoritesState,
             builder: (context) => ListView.separated(
               itemBuilder: (context, index) => buildListProductFav(

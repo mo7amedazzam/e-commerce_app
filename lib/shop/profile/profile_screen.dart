@@ -149,7 +149,7 @@ class ProfileScreen extends StatelessWidget {
                             radius: 40,
                           ),
                         ),
-                      ),
+                      )
                     ),
                   ),
                   Padding(

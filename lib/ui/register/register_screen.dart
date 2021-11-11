@@ -1,3 +1,188 @@
+//
+// import 'package:ecommerce_app/components/components.dart';
+// import 'package:ecommerce_app/constans/const.dart';
+// import 'package:ecommerce_app/helper/sp_helper.dart';
+// import 'package:ecommerce_app/shop/home/home_page.dart';
+// import 'package:ecommerce_app/ui/register/states.dart';
+// import 'package:ecommerce_app/widget/shop_widget.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_conditional_rendering/conditional.dart';
+//
+// import 'cubit.dart';
+//
+// class ShopRegisterScreen extends StatelessWidget {
+//   static const String registerScreenRoute = '/register';
+//   var nameController = TextEditingController();
+//   var emailController = TextEditingController();
+//   var passwordController = TextEditingController();
+//   var phoneController = TextEditingController();
+//   var formKey = GlobalKey<FormState>();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider(
+//         create: (context) => ShopRegisterCubit(),
+//         child: BlocConsumer<ShopRegisterCubit, ShopRegisterState>(
+//           listener: (context, state) {
+//             if (state is ShopRegisterSuccessState) {
+//               if (state.registerModel.status) {
+//                 token = state.registerModel.data.token;
+//                 showToast(
+//                     text: state.registerModel.message,
+//                     state: ToastStates.SUCCESS);
+//                 SpHelper.saveData(
+//                     key: 'token',
+//                     value: state.registerModel.data.token)
+//                     .then((value) {
+//                   pushAndRemove(context: context, widget: ShopWidget());
+//                 });
+//               } else {
+//                 showToast(
+//                     text: state.registerModel.message, state: ToastStates.ERROR);
+//               }
+//             }
+//           },
+//           builder: (context, state) {
+//             return Scaffold(
+//               appBar: AppBar(),
+//               body: Center(
+//                 child: SingleChildScrollView(
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(20.0),
+//                     child: Form(
+//                       key: formKey,
+//                       child: Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Text(
+//                             'Register ',
+//                             style: Theme.of(context)
+//                                 .textTheme
+//                                 .headline4
+//                                 .copyWith(color: Colors.black),
+//                           ),
+//                           SizedBox(
+//                             height: 10,
+//                           ),
+//                           Text('Register  now to get our offers ',
+//                               style: Theme.of(context)
+//                                   .textTheme
+//                                   .headline5
+//                                   .copyWith(color: Colors.blueGrey)),
+//                           SizedBox(
+//                             height: 20,
+//                           ),
+//
+//
+//
+//                           defaultFormField2(
+//                               controller: nameController,
+//                               textKeyboard: TextInputType.name,
+//                               prefix: Icons.person,
+//                               validate: (value) {
+//                                 if (value.isEmpty)
+//                                   return 'Please enter your Name';
+//                                 if (value.length < 2)
+//                                   return 'Your name is too short';
+//                               },
+//                               textLabel: 'User Name'),
+//                           SizedBox(
+//                             height: 10,
+//                           ),
+//                           defaultFormField2(
+//                               controller: emailController,
+//                               textKeyboard: TextInputType.emailAddress,
+//                               prefix: Icons.email_outlined,
+//                               validate: (value) {
+//                                 if (value.isEmpty)
+//                                   return 'Please enter your Email';
+//                               },
+//                               textLabel: 'EmailAddress'),
+//                           SizedBox(
+//                             height: 10,
+//                           ),
+//                           defaultFormField2(
+//                               onFieldSubmitted: (value) {},
+//                               controller: passwordController,
+//                               textKeyboard: TextInputType.text,
+//                               prefix: Icons.lock_outline,
+//                               validate: (value) {
+//                                 if (value.isEmpty)
+//                                   return 'Enter password';
+//                                 if (value.length<6)
+//                                   return 'Password is too short';
+//                               },
+//                               textLabel: 'Password',
+//                               isPassword: ShopRegisterCubit.get(context).isPassword,
+//                               suffixPressed: () {
+//                                 ShopRegisterCubit.get(context).changePasswordVisibility();
+//                               },
+//                               suffix: ShopRegisterCubit.get(context).suffix),
+//                           SizedBox(
+//                             height: 20,
+//                           ),
+//                           defaultFormField2(
+//                               controller: phoneController,
+//                               textKeyboard: TextInputType.phone,
+//                               prefix: Icons.phone,
+//                               validate: (value) {
+//                                 if (value.isEmpty )
+//                                   return 'Number must be enter';
+//
+//                               },
+//                               textLabel: 'Phone'),
+//                           SizedBox(
+//                             height: 10,
+//                           ),
+//                           Conditional.single(
+//                             context: context,
+//                             conditionBuilder: (context) =>
+//                             state is! ShopRegisterLoadingState,
+//                             widgetBuilder: (context) => defaultButton2(
+//                                 text: 'Register',
+//                                 fun: () {
+//                                   if (formKey.currentState.validate()) {
+//                                     ShopRegisterCubit.get(context).userRegister(
+//                                         name: nameController.text,
+//                                         phone: phoneController.text,
+//                                         email: emailController.text,
+//                                         password: passwordController.text);
+//                                   }
+//                                 },
+//                                 ),
+//                             fallbackBuilder: (context) => Center(
+//                               child: CircularProgressIndicator(),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             );
+//           },
+//         ));
+//     // );
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:ecommerce_app/components/components.dart';
 import 'package:ecommerce_app/helper/sp_helper.dart';
@@ -10,6 +195,7 @@ import 'package:ecommerce_app/ui/register/states.dart';
 import 'package:ecommerce_app/widget/shop_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ShopRegisterScreen extends StatelessWidget {
@@ -35,13 +221,10 @@ class ShopRegisterScreen extends StatelessWidget {
                 value: state.registerModel.data.token,
               ).then((value) {
                 state.registerModel.data.token;
-                navigatorTo1(
-                  context,
-                  ShopWidget(),
-                );
+                pushAndRemove(context: context, widget: ShopWidget());
               });
             } else {
-              print(state.registerModel.message);
+              // print(state.registerModel.message);
               showToast(
                   text: state.registerModel.message, state: ToastStates.ERROR);
             }
@@ -123,11 +306,11 @@ class ShopRegisterScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: defaultFormField(
-                                  controller: emailController,
-                                  type: TextInputType.emailAddress,
+                                  controller: nameController,
+                                  type: TextInputType.text,
                                   validate: (String value) {
                                     if (value.isEmpty) {
-                                      return 'Please enter your email address';
+                                      return 'Please enter your user name';
                                     }
                                   },
                                   label: '     User name',
@@ -373,22 +556,23 @@ class ShopRegisterScreen extends StatelessWidget {
                         SizedBox(
                           height: 20.0,
                         ),
-                        ConditionalBuilder(
-                          condition: state is! ShopRegisterLoadingState,
-                          builder: (context) => defaultButton(
-                            function: () {
-                              if (formKey.currentState.validate()) {
-                                ShopRegisterCubit.get(context).userRegister(
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  phone: phoneController.text,
-                                );
-                              }
-                            },
-                            text: 'Sign up',
-                          ),
-                          fallback: (context) => Center(
+                        Conditional.single(
+                          context: context,
+                          conditionBuilder: (context) =>
+                          state is! ShopRegisterLoadingState,
+                          widgetBuilder: (context) => defaultButton3(
+                              text: 'Sign up',
+                              fun: () {
+                                if (formKey.currentState.validate()) {
+                                  ShopRegisterCubit.get(context).userRegister(
+                                      name: nameController.text,
+                                      phone: phoneController.text,
+                                      email: emailController.text,
+                                      password: passwordController.text);
+                                }
+                              },
+                             ),
+                          fallbackBuilder: (context) => Center(
                             child: CircularProgressIndicator(),
                           ),
                         ),
@@ -497,7 +681,7 @@ class ShopRegisterScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 15, top: 15),
                 child: IconButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, "");
+                      NavigatorAndFinish3(context, ShopLoginScreen());
                     },
                     icon: Icon(
                       Icons.arrow_back_ios,

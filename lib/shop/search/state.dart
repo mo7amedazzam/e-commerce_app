@@ -1,10 +1,9 @@
-abstract class SearchStates{}
+abstract class SearchStates {}
 
-class SearchInitialState extends SearchStates{}
+class InitialSearchState extends SearchStates {}
 
-class SearchLoadingState extends SearchStates{}
+class DoneSearchState extends SearchStates {}
 
-class SearchSuccessState extends SearchStates{}
+class ErrorSearchState extends SearchStates {}
 
-class SearchErrorState extends SearchStates{}
-
+class LoadingSearchState extends SearchStates {}

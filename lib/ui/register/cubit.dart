@@ -27,13 +27,10 @@ class ShopRegisterCubit extends Cubit<ShopRegisterState> {
         'password': password,
         'phone': phone,
       },
+
     ).then((value) {
-      print(value.data);
-      RegisterModel.fromJson(value.data);
+       // print(value.data.token);
       registerModel = RegisterModel.fromJson(value.data);
-      print(registerModel.data.token);
-      print(registerModel.status);
-      print(registerModel.message);
       emit(ShopRegisterSuccessState(registerModel));
     }).catchError((error) {
       print(error.toString());

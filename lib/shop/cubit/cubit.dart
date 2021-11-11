@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:ecommerce_app/constans/const.dart';
+import 'package:ecommerce_app/helper/api_helper.dart';
 import 'package:ecommerce_app/helper/db_helper.dart';
 import 'package:ecommerce_app/helper/dio_helper.dart';
 import 'package:ecommerce_app/models/cart-model.dart';
@@ -7,18 +8,34 @@ import 'package:ecommerce_app/models/change_Favorites_model.dart';
 import 'package:ecommerce_app/models/favorites_model.dart';
 import 'package:ecommerce_app/models/login-model.dart';
 import 'package:ecommerce_app/remote/end_points.dart';
+import 'package:ecommerce_app/shop/cart/modelse/add_to_cart.dart';
+import 'package:ecommerce_app/shop/cart/modelse/product_details/product_details_model.dart';
+import 'package:ecommerce_app/shop/cart/shop-data-repository.dart';
 import 'package:ecommerce_app/shop/categories/categories_screen.dart';
+import 'package:ecommerce_app/shop/cubit/states.dart';
+import 'package:ecommerce_app/shop/search/search-screen.dart';
+import 'package:ecommerce_app/shop/setting/settings.dart';
+import 'package:ecommerce_app/shop/shop_bloc/shop_event.dart';
 import 'package:ecommerce_app/ui/login/login_screen/login_screen.dart';
 import '../../models/categories_model.dart';
 import 'package:ecommerce_app/shop/favorites/favorites_screen.dart';
 import 'package:ecommerce_app/shop/home/home_page.dart';
 import '../../models/home_model.dart';
 import 'package:ecommerce_app/shop/profile/profile_screen.dart';
-import 'states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 
-class ShopCubit extends Cubit<ShopeState>{
+class ShopCubit extends Cubit<ShopeState> {
+  ProductsModel selectedProduct;
+  ProductsModel categoryProduct;
+  String selectedCategory = '';
+  bool inFavorite;
+
+  HomeModel homeModel;
+  Map<int, bool> favorite = {};
+
   ShopCubit() : super(ShopInitialStates());
 
   static ShopCubit get(context) => BlocProvider.of(context);
@@ -35,49 +52,44 @@ class ShopCubit extends Cubit<ShopeState>{
     HomePage(),
     CategoriesScreen(),
     FavoritesScreen(),
-    ProfileScreen(),
+    SettingsScreen(),
   ];
 
   void changeBottom(int index) {
     currentIndex = index;
     emit(ShopChangeBottomNavState());
   }
+
   ProductsModel productsModel;
-  HomeModel homeModel;
   Map<int, bool> favorites = {};
   Map<int, bool> cart = {};
-  void getHomoeData()
-  {
+
+  void getHomoeData() {
     emit(LoadingHomeDataState());
     DioHelper.getData(
       url: HOME,
       token: token,
-    ).then((value)
-    {
+    ).then((value) {
       homeModel = HomeModel.fromJson(value.data);
 
       // printFullText(homeModel.data.banners[0].image);
       // print(homeModel.status);
 
-      homeModel.data.products.forEach((element) 
-      {
+      homeModel.data.products.forEach((element) {
         favorites.addAll({
-          element.id : element.inFavorites,
+          element.id: element.inFavorites,
         });
-
       });
-      homeModel.data.products.forEach((element)
-      {
+      homeModel.data.products.forEach((element) {
         cart.addAll({
-          element.id : element.inCart,
+          element.id: element.inCart,
         });
       });
 
       //print(favorites.toString());
 
       emit(SuccessHomeDataState());
-    }).catchError((error)
-    {
+    }).catchError((error) {
       print(error.toString());
       emit(ErrorHomeDataState());
     });
@@ -85,50 +97,43 @@ class ShopCubit extends Cubit<ShopeState>{
 
   CategoriesModel categoriesModel;
 
-  void getCategories()
-  {
+  void getCategories() {
     DioHelper.getData(
       url: GET_CATEGORIES,
       token: token,
-    ).then((value)
-    {
+    ).then((value) {
       categoriesModel = CategoriesModel.fromJson(value.data);
 
       emit(SuccessCategoriesState());
-    }).catchError((error)
-    {
+    }).catchError((error) {
       print(error.toString());
       emit(ErrorCategoriesState());
     });
   }
 
   ChangeFavoritesModel changeFavoritesModel;
-  void changeFavorites(int productId)
-  {
+
+  void changeFavorites(int productId) {
     favorites[productId] = !favorites[productId];
     DioHelper.postData(
-        url: FAVORITES,
-        data: {
-          'product_id': productId,
-        },
+      url: FAVORITES,
+      data: {
+        'product_id': productId,
+      },
       token: token,
-    ).then((value)
-    {
+    ).then((value) {
       changeFavoritesModel = ChangeFavoritesModel.fromJson(value.data);
       print(value.data);
 
-      if(!changeFavoritesModel.status)
-        {
-          favorites[productId] = !favorites[productId];
-        }
-      else
-        {
-          getFavorites();
-        }
+      if (!changeFavoritesModel.status) {
+        favorites[productId] = !favorites[productId];
+      }
+      else {
+        getFavorites();
+      }
 
       emit(SuccessChangeFavoritesState(changeFavoritesModel));
-    }).catchError((error)
-    {
+    }).catchError((error) {
       favorites[productId] = !favorites[productId];
 
       emit(ErrorChangeFavoritesState());
@@ -144,53 +149,49 @@ class ShopCubit extends Cubit<ShopeState>{
   }
 
   FavoritesModel favoritesModel;
-  void getFavorites()
-  {
+
+  void getFavorites() {
     emit(LoadingGetFavoritesState());
 
     DioHelper.getData(
       url: FAVORITES,
       token: token,
-    ).then((value)
-    {
+    ).then((value) {
       favoritesModel = FavoritesModel.fromJson(value.data);
       //printFullText(value.data.toString());
 
       emit(SuccessGetFavoritesState());
-    }).catchError((error)
-    {
+    }).catchError((error) {
       print(error.toString());
       emit(ErrorGetFavoritesState());
     });
   }
 
   LoginModel userModel;
-  void getUserData()
-  {
+
+  void getUserData() {
     emit(LoadingUserDataState());
 
     DioHelper.getData(
       url: PROFILE,
       token: token,
-    ).then((value)
-    {
+    ).then((value) {
       userModel = LoginModel.fromJson(value.data);
       printFullText(userModel.data.name);
 
       emit(SuccessUserDataState(userModel));
-    }).catchError((error)
-    {
+    }).catchError((error) {
       print(error.toString());
       emit(ErrorUserDataState());
     });
   }
 
   void updateUserData({
-  @required String name,
-  @required String email,
-  @required String phone,
-})
-  {
+    @required String name,
+    @required String email,
+    @required String phone,
+  }) {
+    if(token != null)
     emit(LoadingUpdateUserState());
 
     DioHelper.putData(
@@ -201,68 +202,158 @@ class ShopCubit extends Cubit<ShopeState>{
         'email': email,
         'phone': phone,
       },
-    ).then((value)
-    {
+    ).then((value) {
       userModel = LoginModel.fromJson(value.data);
       printFullText(userModel.data.name);
       printFullText(userModel.data.email);
       printFullText(userModel.data.phone);
 
       emit(SuccessUpdateUserState(userModel));
-    }).catchError((error)
-    {
+    }).catchError((error) {
       print(error.toString());
       emit(ErrorUpdateUserState());
     });
   }
 
-  CartModel cartModel;
-  void getCart()
-  {
-    emit(LoadingGetCartState());
+  ProductDetailsModel productDetailsModel;
 
-    DioHelper.postData(
+  void getProductDetails(int productID) {
+    emit(ShopLoadingGetProductDetailsState());
+    DioHelper.getData(url: 'products/$productID', token: token).then((value) {
+      productDetailsModel = ProductDetailsModel.fromJson(value.data);
+      emit(ShopSuccessGetProductDetailsState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(ShopErrorGetProductDetailsState());
+    });
+  }
+
+
+  CartModel cartModel;
+
+  void getCarts() {
+
+    emit(CartLoadingState());
+    DioHelper.getData(
       url: CART,
       token: token,
-    ).then((value)
-    {
+    ).then((value) {
       cartModel = CartModel.fromJson(value.data);
-      //printFullText(value.data.toString());
+      emit(CartSuccessState());
+    }).catchError((onError) {
+      print(onError.toString());
+      emit(CartErrorState());
+    });
+  }
 
-      emit(SuccessGetCartState());
-    }).catchError((error)
-    {
+
+  AddToCart addToCart;
+
+  void addCarts(productId) {
+    if (token != null) {
+      emit(CartAddLoadingState());
+      DioHelper.postData(
+          url: CART,
+          data: {'product_id': productId},
+          token: token)
+          .then((value) {
+        addToCart = AddToCart.fromJson(value.data);
+        getCarts();
+        emit(CartAddSuccessState());
+      }).catchError((error) {
+        print(error.toString());
+        emit(CartAddErrorState());
+      });
+    }
+  }
+
+  void deleteCarts(int productId) {
+    emit(CartRemoveLoadingState());
+    DioHelper.deleteData(url: '$CART/$productId', token: token).then((value) {
+      if (value.data['status']) {
+        getCarts();
+      }
+      print(value.data['message']);
+
+      emit(CartRemoveSuccessState());
+    }).catchError((onError) {
+      print(onError.toString());
+
+      emit(CartRemoveErrorState());
+    });
+  }
+
+  void updateQuantityOfInCartProduct(int inCartProductID, int quantity) {
+    emit(CartLoadingUpdateQuantityState());
+    DioHelper.putData(
+      url: '$CART/$inCartProductID',
+      data: {
+        'quantity': quantity,
+      },
+      token: token,
+    ).then((value) {
+      if (value.data['status']) {
+        getCarts();
+      }
+      emit(CartSuccessUpdateQuantityState());
+    }).catchError((error) {
       print(error.toString());
-      emit(ErrorGetCartState());
+      emit(CartErrorUpdateQuantityState());
     });
-  }
-
-  List<ProductsModel>cartProducts;
-
-  addToCart(ProductsModel productsModel) async {
-    bool productInCart = cartProducts == null
-        ? false
-        : cartProducts.any((x) {
-      return x.id == productsModel.id;
-    });
-
-    getAllCartProdcts();
-  }
-
-  updateProductInCart(ProductsModel productsModel) async {
-    await DpHelper.dpHelper.updateProductQuantity(productsModel);
-    getAllCartProdcts();
-  }
-  deleteFromCart(int id) async {
-    await DpHelper.dpHelper.deleteProductFromCart(id);
-    getAllCartProdcts();
-  }
-
-  getAllCartProdcts() async {
-    List<ProductsModel> products = await DpHelper.dpHelper.getAllCart();
-    this.cartProducts = products;
-    cartProducts.forEach((element) {
-    });
-    // notifyListeners();
   }
 }
+
+
+// List<ProductsModel>cartProducts;
+// addToCart(ProductsModel productsModel) async {
+//   bool productInCart = cartProducts == null
+//       ? false
+//       : cartProducts.any((x) {
+//     return x.id == productsModel.id;
+//   });
+//
+// if (productInCart) {
+//   productsModel.quantity = cartProducts
+//       .where((element) => element.id == productsModel.id)
+//       .first;
+//   await DpHelper.dpHelper.updateProductQuantity(productsModel);
+// } else {
+//   await DpHelper.dpHelper.addProductToCart(productsModel);
+// }
+
+//   getAllCartProdcts();
+// }
+
+// updateProductInCart(ProductsModel productsModel) async {
+//   await DpHelper.dpHelper.updateProductQuantity(productsModel);
+//   getAllCartProdcts();
+// }
+// deleteFromCart(int id) async {
+//   await DpHelper.dpHelper.deleteProductFromCart(id);
+//   getAllCartProdcts();
+// }
+
+// getAllCartProdcts() async {
+//   List<ProductsModel> products = await DpHelper.dpHelper.getAllCart();
+//   this.cartProducts = products;
+//   cartProducts.forEach((element) {
+//   });
+//   emit(state);
+// }
+// getSpecificProduct(int id) async {
+//   selectedProduct = null;
+//   emit(SuccessDetailsProductState());
+//   dynamic response = await ApiHelper.apiHelper.getSpecificProduct(id);
+//   selectedProduct = ProductsModel.fromJson(response);
+//   emit();
+// }
+// getCategoryProducts(String category) async {
+//   categoryProduct = null;
+//   this.selectedCategory = category;
+//   emit(state);
+//   List<dynamic> products =
+//   await ApiHelper.apiHelper.getCategoryProducts(category);
+//   categoryProduct =
+//       products.map((e) => ProductResponse.fromJson(e)).toList();
+//   emit(state);
+// }

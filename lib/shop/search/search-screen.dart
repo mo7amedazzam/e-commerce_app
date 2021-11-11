@@ -6,65 +6,124 @@ import 'package:ecommerce_app/shop/search/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../color.dart';
+
+
 class SearchScreen extends StatelessWidget {
-  var fromKey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
   var searchController = TextEditingController();
 
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => SearchCubit(),
-      child: BlocConsumer<SearchCubit, SearchStates>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Scaffold(
+        create: (context) => SearchCubit(),
+        child: BlocConsumer<SearchCubit, SearchStates>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
               appBar: AppBar(),
-              body: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Form(
-                  key: fromKey,
+              body: Form(
+                key: formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       defaultFormField(
-                        controller: searchController,
-                        type: TextInputType.text,
-                        validate: (String value) {
-                          if (value.isEmpty) {
-                            return 'enater text to search';
-                          }
-                          return null;
-                        },
-                        onSubmit: (String text) {
-                          SearchCubit.get(context).search(text);
-                        },
-                        label: 'Search',
-                        prefix: Icons.search,
-                      ),
+                          textLabel: 'Search',
+                          controller: searchController,
+                          textKeyboard: TextInputType.text,
+                          validate: (value) {
+                            if (value.isEmpty) {
+                              return 'write a word to search..';
+                            }
+                            return null;
+                          },
+                          prefix: Icons.search,
+                          onFieldSubmitted: (value) {
+                            SearchCubit.get(context).search(value);
+                          }),
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
-                      if (state is SearchLoadingState)
+                      if (state is LoadingSearchState)
                         LinearProgressIndicator(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      if(state is SearchSuccessState)
-                      Expanded(
-                        child: ListView.separated(
-                          itemBuilder: (context, index) => buildListProductFav(
-                              SearchCubit.get(context).model.data.data[index],
-                              context,isOldPrice: false),
-                          separatorBuilder: (context, index) => Divider(),
-                          itemCount:
-                              SearchCubit.get(context).model.data.data.length,
+                      if (state is DoneSearchState)
+                        Expanded(
+                          child: ListView.separated(
+                              physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) =>
+                                  buildSearchedItem(
+                                      SearchCubit.get(context)
+                                          .searchModel
+                                          .searchData
+                                          .productsData[index],
+                                      context),
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 10,
+                              ),
+                              itemCount: SearchCubit.get(context)
+                                  .searchModel
+                                  .searchData
+                                  .productsData
+                                  .length),
                         ),
-                      ),
                     ],
                   ),
                 ),
-              ));
-        },
-      ),
-    );
+              ),
+            );
+          },
+        ));
   }
 }
+
+Widget buildSearchedItem(model, context) => Container(
+  height: 140,
+  child: Padding(
+    padding: const EdgeInsets.all(20.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        Image(
+          image: NetworkImage(model.image),
+          height: 140,
+          width: 140,
+        ),
+
+        SizedBox(
+          width: 20,
+        ),
+        Expanded(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    " ${model.name} ",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 14, height: 1.5),
+                  ),
+                  Spacer(),
+                  Row(
+                    children: [
+                      Text(
+                        '${model.price.round()}',
+                        style: TextStyle(
+                            fontSize: 12, height: 1.5, color: defaultColor),
+                      ),
+                      SizedBox(width: 5),
+                    ],
+                  ),
+
+                ]))
+      ],
+    ),
+  ),
+);
+
+
+
+
+
+
+

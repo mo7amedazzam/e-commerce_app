@@ -3,6 +3,8 @@ import 'package:conditional_builder/conditional_builder.dart';
 import 'package:ecommerce_app/components/components.dart';
 import 'package:ecommerce_app/coustom_color/custom_color.dart';
 import 'package:ecommerce_app/shop/cart/cart-screen.dart';
+import 'package:ecommerce_app/shop/cart/product-cart.dart';
+import 'package:ecommerce_app/shop/product-details.dart';
 import 'package:ecommerce_app/shop/search/search-screen.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../models/categories_model.dart';
@@ -33,6 +35,7 @@ class HomePage extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        var cubit = ShopCubit.get(context);
         return Stack(
           children: [
             Scaffold(
@@ -92,20 +95,23 @@ class HomePage extends StatelessWidget {
                   )
                 ],
               ),
-              body:  Stack(
+              body: Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15,top: 40),
+                    padding: const EdgeInsets.only(
+                        left: 15, right: 15, top: 40),
                     child: ConditionalBuilder(
-                      condition: ShopCubit.get(context).homeModel != null &&
-                          ShopCubit.get(context).categoriesModel != null,
-                      builder: (context) => productsBuilder(
-                          ShopCubit.get(context).homeModel,
-                          ShopCubit.get(context).categoriesModel,
-                          context),
-                      fallback: (context) => Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      condition: cubit.homeModel != null &&
+                          cubit.categoriesModel != null,
+                      builder: (context) =>
+                          productsBuilder(
+                              cubit.homeModel,
+                              cubit.categoriesModel,
+                              context),
+                      fallback: (context) =>
+                          Center(
+                            child: CircularProgressIndicator(),
+                          ),
                     ),
                   ),
 
@@ -150,8 +156,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-Widget productsBuilder(
-        HomeModel model, CategoriesModel categoriesModel, context) =>
+Widget productsBuilder(HomeModel model, CategoriesModel categoriesModel,
+    context) =>
     SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Column(
@@ -162,7 +168,8 @@ Widget productsBuilder(
               CarouselSlider(
                 items: model.data.banners
                     .map(
-                      (e) => Container(
+                      (e) =>
+                      Container(
                         height: 100,
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -181,7 +188,7 @@ Widget productsBuilder(
                         //   fit: BoxFit.cover,
                         // ),
                       ),
-                    )
+                )
                     .toList(),
                 options: CarouselOptions(
                   height: 100,
@@ -262,9 +269,10 @@ Widget productsBuilder(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) =>
                         buildCategoryItem(categoriesModel.data.data[index]),
-                    separatorBuilder: (context, incdex) => SizedBox(
-                      width: 10,
-                    ),
+                    separatorBuilder: (context, incdex) =>
+                        SizedBox(
+                          width: 10,
+                        ),
                     itemCount: categoriesModel.data.data.length,
                   ),
                 ),
@@ -289,10 +297,10 @@ Widget productsBuilder(
                 crossAxisCount: 2,
                 mainAxisSpacing: 10.0,
                 crossAxisSpacing: 10.0,
-                childAspectRatio: 1 / 1.65,
+                childAspectRatio: 1 / 1.90,
                 children: List.generate(
                   model.data.products.length,
-                  (index) =>
+                      (index) =>
                       buildGridProduct(model.data.products[index], context),
                 )),
           ),
@@ -300,7 +308,8 @@ Widget productsBuilder(
       ),
     );
 
-Widget buildCategoryItem(DataModel model) => Stack(
+Widget buildCategoryItem(DataModel model) =>
+    Stack(
       alignment: Alignment.center,
       children: [
         Container(
@@ -380,45 +389,48 @@ Widget buildCategoryItem(DataModel model) => Stack(
       ],
     );
 
-Widget buildGridProduct(ProductsModel model, context) => Container(
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            alignment: AlignmentDirectional.bottomStart,
-            children: [
-              GestureDetector(
-                onTap: (){
-                  navigatorToCart(context, CartScreen);
-                },
-                child: Image(
+Widget buildGridProduct(ProductsModel model, context) =>
+    GestureDetector(
+      onTap: () {
+        // Navigator.of(context).push(
+        //     MaterialPageRoute(builder: (context) {
+        //       return ProductDetails();
+        //     }));
+      },
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: [
+                Image(
                   image: NetworkImage(model.image),
                   width: double.infinity,
                   height: 180,
                 ),
-              ),
-              if (model.discount != 0)
-                Container(
-                  color: Colors.red,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 5.0,
-                  ),
-                  child: Text(
-                    'DISCOUNT',
-                    style: TextStyle(
-                      fontSize: 9.0,
-                      color: Colors.white,
+                if (model.discount != 0)
+                  Container(
+                    color: Colors.red,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.0,
                     ),
-                  ),
-                )
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                    child: Text(
+                      'DISCOUNT',
+                      style: TextStyle(
+                        fontSize: 9.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 //   Container(
                 //     height: 10,
                 //     child: RatingBar.builder(
@@ -440,65 +452,80 @@ Widget buildGridProduct(ProductsModel model, context) => Container(
                 //   ),
                 // SizedBox(height: 5,),
                 Text(
-                  model.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    height: 1.3,
-                  ),
+                model.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.3,
                 ),
-                Row(
-                  children: [
+              ),
+              Row(
+                children: [
+                  Text(
+                    '${model.price.round()}' + '\$',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  if (model.discount != 0)
                     Text(
-                      '${model.price.round()}' + '\$',
+                      '${model.oldPrice.round()}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    if (model.discount != 0)
-                      Text(
-                        '${model.oldPrice.round()}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 10.0,
-                          color: Colors.grey,
-                          decoration: TextDecoration.lineThrough,
-                          decorationColor: Colors.red,
-                        ),
-                      ),
-                    Spacer(),
-                    IconButton(
-                      onPressed: () {
-                        ShopCubit.get(context).changeFavorites(model.id);
-                        print(model.id);
-                      },
-                      icon: CircleAvatar(
-                        radius: 15.0,
-                        backgroundColor:
-                            ShopCubit.get(context).favorites[model.id]
-                                ? Colors.amber
-                                : Colors.grey[400],
-                        child: Icon(
-                          Icons.favorite_border,
-                          size: 14.0,
-                          color: Colors.white,
-                        ),
+                        fontSize: 10.0,
+                        color: Colors.grey,
+                        decoration: TextDecoration.lineThrough,
+                        decorationColor: Colors.red,
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      ShopCubit.get(context).changeFavorites(model.id);
+                      print(model.id);
+                    },
+                    icon: CircleAvatar(
+                      radius: 15.0,
+                      backgroundColor:
+                      ShopCubit
+                          .get(context)
+                          .favorites[model.id]
+                          ? Colors.amber
+                          : Colors.grey[400],
+                      child: Icon(
+                        Icons.favorite_border,
+                        size: 14.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 2),
+              defaultButton2(text: 'Add to cart', fun: () {
+                ShopCubit.get(context).addCarts(model.id);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Added to cart successfully!'),
+                      padding: EdgeInsetsDirectional.all(20),
+                      duration: Duration(milliseconds: 800),
+                    )
+                );
+              },
+              ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
 

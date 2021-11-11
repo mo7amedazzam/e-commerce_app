@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ecommerce_app/models/home_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DpHelper {
@@ -13,14 +14,14 @@ class DpHelper {
   }
 
   connectToDatabase() async {
-    // Directory directory = await getApplicationDocumentsDirectory();
-    // String path = directory.path + '/Ecommerce_app.db';
-    // Database database =
-    //     await openDatabase(path, version: 1, onCreate: (db, varsion) {
-    //   db.execute(
-    //       '''CREATE TABLE Cart (id INTEGER PRIMARY KEY, name TEXT,price REAL ,description TEXT,image TEXT, oldPrice DOUBLE, discount INTEGER)''');
-    // });
-    // return database;
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = directory.path + '/Ecommerce_app.db';
+    Database database =
+        await openDatabase(path, version: 1, onCreate: (db, varsion) {
+      db.execute(
+          '''CREATE TABLE Cart (id INTEGER PRIMARY KEY, name TEXT,price REAL ,description TEXT,image TEXT, oldPrice DOUBLE, discount INTEGER)''');
+    });
+    return database;
   }
 
   addProductToCart(ProductsModel model) async {
@@ -39,7 +40,7 @@ class DpHelper {
   }
 
   updateProductQuantity(ProductsModel productsModel) async {
-    // productResponse.quantity = productResponse.quantity++;
+    // productsModel.quantity = productsModel.quantity++;
 
 
     database.update('Cart', productsModel.todBJson(),

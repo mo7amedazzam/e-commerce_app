@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/models/change_Favorites_model.dart';
+import 'package:ecommerce_app/models/home_model.dart';
 import 'package:ecommerce_app/models/login-model.dart';
 
 abstract class ShopeState {}
@@ -53,13 +54,61 @@ class SuccessUpdateUserState extends ShopeState {
 
   SuccessUpdateUserState(this.loginModel);
 }
-
 class ErrorUpdateUserState extends ShopeState {}
 
-class ErrorChangeCartState extends ShopeState {}
 
-class LoadingGetCartState extends ShopeState{}
+class ShopPageLoadingState extends ShopeState{
+  HomeDataModel shopData;
+  HomeDataModel cartData;
+  ShopPageLoadingState({this.cartData,this.shopData});
 
-class SuccessGetCartState extends ShopeState {}
+}
+class ItemAddingCartState extends ShopeState {
+  HomeDataModel cartModel;
+  List<ProductsModel> cartItems;
+  ItemAddingCartState({this.cartItems,this.cartModel});
+}
+class ItemAddedCartState extends ShopeState {
+  List<ProductsModel> cartItems;
+  ItemAddedCartState({this.cartItems});
+}
+class ItemDeletingCartState extends ShopeState{
+  List<ProductsModel> cartItems;
+  ItemDeletingCartState({this.cartItems});
+}
 
-class ErrorGetCartState extends ShopeState {}
+class UserLoadingState extends ShopeState {}
+
+class UserSuccessState extends ShopeState {}
+
+class UserErrorState extends ShopeState {}
+class UpdateLoadingState extends ShopeState {}
+
+class UpdateSuccessState extends ShopeState {
+  final LoginModel model;
+
+  UpdateSuccessState(this.model);
+
+}
+
+class CartSuccessState extends ShopeState {}
+
+class CartErrorState extends ShopeState {}
+class CartLoadingState extends ShopeState {}
+class CartAddSuccessState extends ShopeState {}
+
+class CartAddErrorState extends ShopeState {}
+class CartAddLoadingState extends ShopeState {}
+class CartRemoveSuccessState extends ShopeState {}
+
+class CartRemoveErrorState extends ShopeState {}
+class CartRemoveLoadingState extends ShopeState {}
+class CartSuccessUpdateQuantityState extends ShopeState {}
+
+class ShopLoadingGetProductDetailsState extends ShopeState {}
+
+class ShopSuccessGetProductDetailsState extends ShopeState {}
+
+class ShopErrorGetProductDetailsState extends ShopeState {}
+class CartErrorUpdateQuantityState extends ShopeState {}
+class CartLoadingUpdateQuantityState extends ShopeState {}

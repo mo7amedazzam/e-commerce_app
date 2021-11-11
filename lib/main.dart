@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => ShopCubit()..getHomoeData()..getCategories()..getFavorites()..getUserData(),
+      create: (BuildContext context) => ShopCubit()..getHomoeData()..getCategories()..getFavorites()..getUserData()..getCarts(),
         // ..changeAppMode(
         //   fromShared: isDark,
         // ),

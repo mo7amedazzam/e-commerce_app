@@ -1,13 +1,20 @@
 import 'package:ecommerce_app/helper/sp_helper.dart';
 import 'package:ecommerce_app/shop/cart/cart-screen.dart';
+import 'package:ecommerce_app/shop/cart/product-cart.dart';
 import 'package:ecommerce_app/shop/cubit/cubit.dart';
 import 'package:ecommerce_app/shop/home/home_page.dart';
+import 'package:ecommerce_app/shop/product-details.dart';
 import 'package:ecommerce_app/shop/search/search-screen.dart';
 import 'package:ecommerce_app/ui/register/register_screen.dart';
 import 'package:ecommerce_app/widget/shop_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../ui/login/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
+
+void pushAndRemove({context, widget}) => {
+  Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => widget), (route) => false)
+};
 
 void navigatorTo(context, widget) =>
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -64,16 +71,22 @@ void NavigatorAndFinish3(context, widget) {
   }));
 }
 
-void navigatorToCart(context, widget) =>
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return CartScreen();
-    }));
+// void navigatorToCartProduct(context, widget) =>
+//     Navigator.push(context, MaterialPageRoute(builder: (context) {
+//       return CartProduct();
+//     }));
 
 void NavigatorAndFinishToHome(context, widget) {
   Navigator.pop(context, MaterialPageRoute(builder: (context) {
     return ShopWidget();
   }));
 }
+
+void navigateToCart({context,widget}) =>
+    {Navigator.push(context, MaterialPageRoute(builder: (context) => widget))};
+
+void navigateTo({ context,  widget}) =>
+    {Navigator.push(context, MaterialPageRoute(builder: (context) => widget))};
 
 
 Widget defaultTextButton({
@@ -92,6 +105,8 @@ Widget defaultTextButton({
         textAlign: TextAlign.center,
       ),
     );
+Widget textButton({ String text, VoidCallback fun}) =>
+    TextButton(onPressed: fun, child: Text(text.toUpperCase()));
 
 Widget defaultButton({
   @required Function function,
@@ -99,6 +114,7 @@ Widget defaultButton({
   double width,
   double height,
   Color background,
+  void fun(),
 }) =>
     Align(
       alignment:Alignment.center ,
@@ -129,6 +145,103 @@ Widget defaultButton({
         ),
       ),
     );
+Widget defaultButton2({
+  double radius = 0,
+  double width = double.infinity,
+  Color color = Colors.blue,
+  bool isUpper = true,
+  @required String text,
+  @required void fun(),
+}) =>
+    Container(
+      width: width,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: MaterialButton(
+        child: Text(
+          " ${isUpper ? text.toUpperCase() : text} ",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: fun,
+      ),
+    );
+
+Widget defaultButton3({
+  @required void fun(),
+  @required String text,
+  double width,
+  double height,
+  Color background,
+}) =>
+    Align(
+      alignment:Alignment.center ,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Color(0xFF0099e6),
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFFb3e6ff),
+                spreadRadius: 2,
+                blurRadius: 15,
+                offset: Offset.zero,
+              ),
+            ]
+        ),
+        width: 150,
+        height: 50,
+        child: MaterialButton(
+          onPressed: fun,
+          child: Align(
+              alignment: Alignment.center,
+              child: Text(text,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900))),
+        ),
+      ),
+    );
+
+
+
+Widget defaultFormField2({
+  @required TextEditingController controller,
+  @required TextInputType textKeyboard,
+  IconData suffix,
+  String helper = '',
+  GestureTapCallback onTaped,
+  bool isPassword = false,
+  @required IconData prefix,
+  ValueChanged<String> onchange,
+  ValueChanged<String> onFieldSubmitted,
+  @required FormFieldValidator<String> validate,
+  @required String textLabel,
+  VoidCallback suffixPressed,
+}) =>
+    TextFormField(
+      validator: validate,
+      controller: controller,
+      keyboardType: textKeyboard,
+      obscureText: isPassword,
+      decoration: InputDecoration(       helperText: '$helper',
+
+        labelText: textLabel,
+        prefixIcon: Icon(prefix),
+        suffixIcon: suffix != null
+            ? IconButton(
+          icon: Icon(suffix),
+          onPressed: suffixPressed,
+        )
+            : null,
+        border: OutlineInputBorder(),
+      ),
+      onChanged: onchange,
+      onFieldSubmitted: onFieldSubmitted,
+      onTap: onTaped,
+    );
 
 Widget defaultFormField({
   @required TextEditingController controller,
@@ -143,22 +256,27 @@ Widget defaultFormField({
   IconData suffix,
   Function suffixPressed,
   bool isClickable = true,
+  ValueChanged<String> onFieldSubmitted,
+  @required String textLabel,
+  @required TextInputType textKeyboard,
+  String helper = '',
 }) =>
-    TextField(
+    TextFormField(
 
       controller: controller,
-      keyboardType: type,
+      keyboardType: textKeyboard,
       obscureText: isPassword,
      // onFieldSubmitted: onSubmit,
       onChanged: onChange,
       onTap: onTap,
+      onFieldSubmitted: onFieldSubmitted,
       //validator: validate,
       // cursorColor: Colors.grey,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.symmetric(horizontal: 0,vertical: 0),
         enabledBorder: InputBorder.none,
-        labelText: label,
+        labelText: textLabel,
         prefixIcon: Icon(prefix),
         suffixIcon: suffix != null
             ? IconButton(onPressed: suffixPressed, icon: Icon(suffix))
@@ -167,6 +285,42 @@ Widget defaultFormField({
             borderRadius: BorderRadius.circular(25),),
       ),
     );
+
+Widget buildAddToCartButton({
+  double size = double.infinity,
+  String label,
+   void Function() onPressed,
+}) {
+  return Container(
+    width: size,
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(20.0),
+        elevation: 10,
+      ),
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.add_shopping_cart,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: 5.0,
+          ),
+          Text(label),
+        ],
+      ),
+    ),
+  );
+}
+
+bool isPhoneNoValid(value) {
+  if (value == null) return false;
+  final regExp = RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+  return regExp.hasMatch(value);
+}
 
 void showToast({
   @required String text,

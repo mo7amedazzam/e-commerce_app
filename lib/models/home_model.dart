@@ -24,8 +24,8 @@ class HomeModel {
   }
 }
 class HomeDataModel {
-  List<BannersModel> banners;
   List<ProductsModel> products;
+  List<BannersModel> banners;
   String ad;
 
   HomeDataModel({this.banners, this.products, this.ad});

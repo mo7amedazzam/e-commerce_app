@@ -205,6 +205,29 @@ Widget defaultButton3({
       ),
     );
 
+Widget defaultButton4({
+  double radius = 0,
+  double width = double.infinity,
+  Color color = Colors.blue,
+  bool isUpper = true,
+  @required String text,
+  @required void fun(),
+}) =>
+    Container(
+      width: width,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+      child: MaterialButton(
+        child: Text(
+          " ${isUpper ? text.toUpperCase() : text} ",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        onPressed: fun,
+      ),
+    );
+
 
 
 Widget defaultFormField2({

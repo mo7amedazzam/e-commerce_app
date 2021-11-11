@@ -101,7 +101,7 @@ class UserScreen extends StatelessWidget {
                                   SizedBox(
                                     height: 15,
                                   ),
-                                  defaultButton(
+                                  defaultButton4(
                                     text: 'Update',
                                     fun: () {
                                       if (formKey.currentState.validate()) {

@@ -562,6 +562,7 @@ class ShopRegisterScreen extends StatelessWidget {
                           state is! ShopRegisterLoadingState,
                           widgetBuilder: (context) => defaultButton3(
                               text: 'Sign up',
+                              height: 50,
                               fun: () {
                                 if (formKey.currentState.validate()) {
                                   ShopRegisterCubit.get(context).userRegister(

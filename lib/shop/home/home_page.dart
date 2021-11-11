@@ -510,7 +510,7 @@ Widget buildGridProduct(ProductsModel model, context) =>
                 ],
               ),
               SizedBox(height: 2),
-              defaultButton2(text: 'Add to cart', fun: () {
+              defaultButton3(text: 'Add to cart',height: 35,fun: () {
                 ShopCubit.get(context).addCarts(model.id);
                 ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

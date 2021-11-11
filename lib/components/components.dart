@@ -191,7 +191,7 @@ Widget defaultButton3({
             ]
         ),
         width: 150,
-        height: 50,
+        height: height,
         child: MaterialButton(
           onPressed: fun,
           child: Align(
@@ -199,7 +199,7 @@ Widget defaultButton3({
               child: Text(text,
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w900))),
         ),
       ),

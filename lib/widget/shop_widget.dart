@@ -117,101 +117,81 @@ class ShopWidget extends StatelessWidget {
                                 label: 'Profile'),
                           ]),
                     ),
-                    // Stack(
-                    //   children: [
-                    //     CircleAvatar(
-                    //       backgroundColor: defaultColor,
-                    //       radius: 20,
-                    //       child: FloatingActionButton(onPressed: () {
-                    //         navigateTo( context: context, widget:  CartScreen ());
-                    //       },
-                    //         child:  Icon(Icons.local_grocery_store_outlined , color: Colors.grey[350],)
-                    //
-                    //         ,),
-                    //     )
+                    Stack(
+                      children: [
                         // FloatingActionButton(
                         // onPressed: (){
-                        //   navigateToCart(context: context, widget: CartScreen());
+                        //   navigateTo( context: context, widget:  CartScreen ());
                         // },
                         //   child: Icon(Icons.local_grocery_store_outlined , color: Colors.grey[350],),
                         // ),
-                        // Container(
-                        //     margin: EdgeInsets.only(
-                        //       left: 280,
-                        //     ),
-                        //     height: 55,
-                        //     width: 100,
-                        //     decoration: BoxDecoration(
-                        //       gradient: LinearGradient(
-                        //         //663399  //8A2BE2  //9932CC  //9400D3
-                        //         colors: [Color(0xFF6800b3), Color(0xFFbf66ff)],
-                        //         stops: [0.3, 1.0],
-                        //       ),
-                        //       borderRadius: BorderRadius.only(
-                        //           topLeft: Radius.circular(25),
-                        //           bottomLeft: Radius.circular(25)),
-                        //     ),
-                        //     alignment: Alignment.centerLeft,
-                        //     child: Align(
-                        //       child: Container(
-                        //         margin: EdgeInsets.only(left: 15),
-                        //         child: RichText(
-                        //           textAlign: TextAlign.center,
-                        //           text: TextSpan(
-                        //             style: TextStyle(
-                        //                 fontSize: 13, color: Colors.white),
-                        //             children: [
-                        //               WidgetSpan(
-                        //                 child: Align(
-                        //                   child: Align(
-                        //                     alignment: Alignment.center,
-                        //                     child: Container(
-                        //                       padding: EdgeInsets.only(
-                        //                         top: 5,
-                        //                       ),
-                        //                       child: IconButton(
-                        //                         icon: Icon(
-                        //                           Icons.shopping_cart_outlined,
-                        //                           color: Colors.white,
-                        //                           size: 25,
-                        //                         ),
-                        //                         onPressed: (){
-                        //                           navigateToCart(context: context, widget: CartScreen());
-                        //                         },
-                        //                       ),
-                        //                     ),
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //               TextSpan(text: '\$254.36'),
-                        //             ],
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     )
-                        //     // Padding(
-                        //     //   padding: const EdgeInsets.only(left: 10),
-                        //     //   child: Icon(
-                        //     //     Icons.shopping_cart_outlined,
-                        //     //     color: Colors.white,
-                        //     //   ),
-                        //     // ),
-                        //     ),
-                    //   ],
-                    // ),
+                        Container(
+                            margin: EdgeInsets.only(
+                              left: 280,
+                            ),
+                            height: 55,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                //663399  //8A2BE2  //9932CC  //9400D3
+                                colors: [Color(0xFF6800b3), Color(0xFFbf66ff)],
+                                stops: [0.3, 1.0],
+                              ),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  bottomLeft: Radius.circular(25)),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: Align(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 15),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    style: TextStyle(
+                                        fontSize: 13, color: Colors.white),
+                                    children: [
+                                      WidgetSpan(
+                                        child: Align(
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Container(
+                                              padding: EdgeInsets.only(
+                                                top: 5,
+                                              ),
+                                              child: IconButton(
+                                                icon: Icon(
+                                                  Icons.shopping_cart_outlined,
+                                                  color: Colors.white,
+                                                  size: 30,
+                                                ),
+                                                onPressed: (){
+                                                  navigateToCart(context: context, widget: CartScreen());
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      TextSpan(text: '\$254.36'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 10),
+                            //   child: Icon(
+                            //     Icons.shopping_cart_outlined,
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            ),
+                      ],
+                    ),
                   ],
                 ),
-                floatingActionButton: (
-                    CircleAvatar(
-                      backgroundColor: defaultColor,
-                      radius: 20,
-                      child: FloatingActionButton(onPressed: () {
-                        navigateTo( context: context, widget:  CartScreen ());
-                      },
-                        child:  Icon(Icons.local_grocery_store_outlined , color: Colors.grey[350],)
 
-                        ,),
-                    )),
               ),
             ],
           ),
